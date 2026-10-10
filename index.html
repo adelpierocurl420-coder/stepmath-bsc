@@ -1,0 +1,818 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#101c33">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%277%27 fill=%27%230b7a75%27/%3E%3Ctext x=%2716%27 y=%2723%27 font-family=%27Arial%27 font-weight=%27900%27 font-size=%2720%27 text-anchor=%27middle%27 fill=%27white%27%3EF%3C/text%3E%3C/svg%3E">
+<title>FestDesk · DRMC IT Club Event Registration</title>
+<meta name="description" content="Browse fests, explore events and register in one place. Organizer dashboard included. Built for the DRMC International Tech Carnival 2026 AI Web Development Contest.">
+<style>
+:root{
+  --bg:#f5f3ee;--card:#ffffff;--ink:#101c33;--muted:#5b667a;--line:#e3e0d8;
+  --accent:#0b7a75;--accent-ink:#ffffff;--accent-soft:#dff3f1;
+  --ok:#17803d;--ok-soft:#dcf5e4;--warn:#9a6700;--warn-soft:#fff1c9;--bad:#b42318;--bad-soft:#fde4e1;--gray-soft:#ebe9e3;
+  --shadow:0 1px 2px rgba(16,28,51,.06),0 6px 20px rgba(16,28,51,.06);
+  --r:14px;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0c1220;--card:#141c2f;--ink:#e8edf7;--muted:#9aa6bd;--line:#26314a;
+    --accent:#3cc6bd;--accent-ink:#06201e;--accent-soft:#12302f;
+    --ok:#5fd08a;--ok-soft:#12301f;--warn:#f0c14b;--warn-soft:#352b0d;--bad:#ff8a7e;--bad-soft:#3a1814;--gray-soft:#1d2740;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 6px 20px rgba(0,0,0,.3);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0c1220;--card:#141c2f;--ink:#e8edf7;--muted:#9aa6bd;--line:#26314a;
+  --accent:#3cc6bd;--accent-ink:#06201e;--accent-soft:#12302f;
+  --ok:#5fd08a;--ok-soft:#12301f;--warn:#f0c14b;--warn-soft:#352b0d;--bad:#ff8a7e;--bad-soft:#3a1814;--gray-soft:#1d2740;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 6px 20px rgba(0,0,0,.3);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;min-height:100vh}
+a{color:var(--accent)}
+h1,h2,h3{line-height:1.2;margin:0 0 .5rem}
+h1{font-size:clamp(1.6rem,4.5vw,2.4rem);letter-spacing:-.02em}
+h2{font-size:1.35rem}
+h3{font-size:1.05rem}
+p{margin:0 0 .75rem}
+.wrap{max-width:1120px;margin:0 auto;padding:0 16px}
+header.top{position:sticky;top:0;z-index:30;background:var(--card);border-bottom:1px solid var(--line)}
+.bar{display:flex;align-items:center;gap:12px;padding:10px 0;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);font-weight:800;font-size:1.1rem}
+.logo{width:36px;height:36px;border-radius:10px;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-weight:900}
+.brand small{display:block;font-weight:500;color:var(--muted);font-size:.72rem;margin-top:-2px}
+nav.main{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+nav.main a,nav.main button{padding:8px 12px;border-radius:999px;text-decoration:none;color:var(--ink);font-weight:600;font-size:.92rem;border:1px solid transparent;background:none;cursor:pointer;font-family:inherit}
+nav.main a:hover,nav.main button:hover{background:var(--gray-soft)}
+nav.main a.active{background:var(--accent-soft);color:var(--accent);border-color:var(--accent)}
+main{padding:22px 0 60px}
+.hero{background:linear-gradient(135deg,var(--accent-soft),transparent 70%),var(--card);border:1px solid var(--line);border-radius:20px;padding:clamp(18px,4vw,34px);box-shadow:var(--shadow);margin-bottom:26px}
+.hero p{color:var(--muted);max-width:60ch}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:999px;background:var(--gray-soft);font-size:.82rem;font-weight:600}
+.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr))}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px;box-shadow:var(--shadow)}
+.card.link{display:block;text-decoration:none;color:inherit;transition:transform .12s,border-color .12s}
+.card.link:hover{transform:translateY(-2px);border-color:var(--accent)}
+.card .meta{color:var(--muted);font-size:.88rem;display:flex;flex-direction:column;gap:2px;margin:6px 0 10px}
+.badge{display:inline-block;padding:3px 9px;border-radius:999px;font-size:.75rem;font-weight:700;background:var(--gray-soft);color:var(--ink)}
+.badge.ok{background:var(--ok-soft);color:var(--ok)}
+.badge.warn{background:var(--warn-soft);color:var(--warn)}
+.badge.bad{background:var(--bad-soft);color:var(--bad)}
+.badge.acc{background:var(--accent-soft);color:var(--accent)}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.row.between{justify-content:space-between}
+.section{margin-top:28px}
+.section>h2{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.muted{color:var(--muted)}
+.small{font-size:.86rem}
+.progress{height:8px;border-radius:99px;background:var(--gray-soft);overflow:hidden;margin:6px 0}
+.progress>i{display:block;height:100%;background:var(--accent);border-radius:99px}
+.progress.full>i{background:var(--bad)}
+.progress.mid>i{background:var(--warn)}
+.filters{display:grid;gap:10px;grid-template-columns:2fr 1fr 1fr auto;margin-bottom:14px;align-items:end}
+@media(max-width:760px){.filters{grid-template-columns:1fr 1fr}.filters .grow{grid-column:1/-1}}
+label{display:block;font-weight:600;font-size:.86rem;margin-bottom:4px}
+input,select,textarea{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);font:inherit;min-height:42px}
+textarea{min-height:84px;resize:vertical}
+input:focus,select:focus,textarea:focus,button:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+input[type=checkbox]{width:auto;min-height:0}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:10px 16px;border-radius:10px;border:1px solid var(--accent);background:var(--accent);color:var(--accent-ink);font:inherit;font-weight:700;cursor:pointer;text-decoration:none;min-height:42px}
+.btn:hover{filter:brightness(1.07)}
+.btn.ghost{background:transparent;color:var(--accent)}
+.btn.danger{background:var(--bad);border-color:var(--bad);color:#fff}
+.btn.danger.ghost{background:transparent;color:var(--bad)}
+.btn.sm{padding:6px 10px;min-height:34px;font-size:.85rem}
+.btn[disabled]{opacity:.5;cursor:not-allowed;filter:none}
+.two{display:grid;gap:18px;grid-template-columns:1.2fr 1fr}
+@media(max-width:860px){.two{grid-template-columns:1fr}}
+.form-grid{display:grid;gap:12px;grid-template-columns:1fr 1fr}
+.form-grid .full{grid-column:1/-1}
+@media(max-width:560px){.form-grid{grid-template-columns:1fr}}
+.err{color:var(--bad);font-size:.82rem;margin-top:3px}
+.crumbs{font-size:.88rem;color:var(--muted);margin-bottom:10px}
+.crumbs a{color:var(--muted)}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 16px;border-bottom:1px solid var(--line);padding-bottom:10px}
+.tabs button{padding:8px 14px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit;font-weight:600;cursor:pointer}
+.tabs button.active{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.kpis{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));margin-bottom:18px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px}
+.kpi b{display:block;font-size:1.7rem;line-height:1.1}
+.kpi span{color:var(--muted);font-size:.84rem}
+.stack{display:flex;height:14px;border-radius:99px;overflow:hidden;background:var(--gray-soft)}
+.stack i{display:block;height:100%}
+.legend{display:flex;gap:12px;flex-wrap:wrap;font-size:.82rem;margin-top:6px}
+.legend span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;background:var(--c)}
+table{width:100%;border-collapse:collapse;font-size:.9rem}
+th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:middle}
+th{font-size:.78rem;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
+.tablewrap{overflow-x:auto}
+@media(max-width:760px){
+  table.stackable thead{display:none}
+  table.stackable,table.stackable tbody,table.stackable tr,table.stackable td{display:block;width:100%}
+  table.stackable tr{background:var(--card);border:1px solid var(--line);border-radius:12px;margin-bottom:10px;padding:6px 10px}
+  table.stackable td{border:0;padding:5px 0;display:flex;justify-content:space-between;gap:12px;text-align:right}
+  table.stackable td::before{content:attr(data-label);font-weight:700;color:var(--muted);text-align:left}
+}
+.modal-bg{position:fixed;inset:0;background:rgba(5,10,20,.55);z-index:60;display:flex;align-items:flex-start;justify-content:center;padding:20px 12px;overflow:auto}
+.modal{background:var(--card);border-radius:18px;max-width:640px;width:100%;padding:20px;box-shadow:var(--shadow);border:1px solid var(--line)}
+.toast-box{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:80;display:flex;flex-direction:column;gap:8px;width:min(92vw,420px)}
+.toast{background:var(--ink);color:var(--bg);padding:11px 14px;border-radius:12px;font-weight:600;box-shadow:var(--shadow)}
+.toast.err{background:var(--bad);color:#fff}
+.ticket{border:2px dashed var(--accent);border-radius:16px;padding:18px;background:var(--accent-soft)}
+.ticket .id{font:700 1.5rem ui-monospace,Menlo,Consolas,monospace;letter-spacing:.05em}
+.empty{text-align:center;padding:34px 12px;color:var(--muted);border:1px dashed var(--line);border-radius:var(--r)}
+footer{border-top:1px solid var(--line);padding:18px 0 30px;color:var(--muted);font-size:.85rem}
+.kv{display:grid;grid-template-columns:110px 1fr;gap:6px 12px;font-size:.93rem}
+.kv dt{color:var(--muted);font-weight:600}
+.kv dd{margin:0}
+@media(max-width:640px){
+  header.top{position:static}
+  .bar{padding:8px 0;gap:6px}
+  nav.main{margin-left:0;width:100%;flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:2px}
+  nav.main a,nav.main button{white-space:nowrap;padding:6px 11px;font-size:.86rem}
+  main{padding-top:14px}
+}
+
+.judge-strip{display:flex;gap:6px 18px;flex-wrap:wrap;align-items:center;justify-content:space-between;background:#101c33;color:#e8edf7;border-radius:12px;padding:10px 14px;margin-bottom:16px;font-size:.88rem;border-left:4px solid #c4a35a}
+.judge-strip a{color:#9fe3dd;font-weight:700}
+.judge-strip code{font-weight:700}
+.announce{margin:14px 0;padding:10px 14px;border-left:4px solid #c4a35a;background:var(--warn-soft);border-radius:0 10px 10px 0}
+.announce h4{margin:0 0 3px;font-size:.82rem;color:var(--warn)}
+.qrbox{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin:10px 0}
+.qrbox img{background:#fff;padding:6px;border-radius:10px;border:1px solid var(--line)}
+.qrfallback{width:140px;height:140px;display:grid;place-items:center;text-align:center;background:#fff;color:#101c33;border:1px solid var(--line);border-radius:10px;font:700 .8rem ui-monospace,Menlo,monospace;padding:8px}
+.checkin-ok{border:1px solid var(--line);border-radius:12px;padding:12px;background:var(--accent-soft)}
+.countdown{font:700 1.25rem/1.2 ui-monospace,Menlo,Consolas,monospace;font-variant-numeric:tabular-nums;color:var(--accent)}
+.countdown.urgent{color:var(--bad)}
+.chart{display:flex;align-items:flex-end;gap:8px;height:150px;padding-top:18px}
+.chart .col{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;min-width:0}
+.chart .col i{display:block;width:100%;max-width:46px;background:var(--accent);border-radius:6px 6px 0 0;min-height:3px}
+.chart .col b{font-size:.8rem;margin-bottom:3px}
+.chart .col span{font-size:.72rem;color:var(--muted);margin-top:5px;white-space:nowrap}
+.toast-box{pointer-events:none}
+td select{min-width:118px}
+@media(min-width:761px){td[data-label=ID]{white-space:nowrap}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+td .v{display:block}
+@media(max-width:760px){table.stackable td .v{text-align:right;min-width:0;overflow-wrap:anywhere}}
+@media print{
+  header.top,footer,.no-print,.toast-box{display:none!important}
+  body{background:#fff;color:#000}
+}
+
+/* ===== polish pass ===== */
+:root{--shadow:0 1px 2px rgba(16,28,51,.07),0 4px 14px rgba(16,28,51,.05);--line:#dcd8cd;--gold:#e5c77a}
+body{line-height:1.55;font-feature-settings:"tnum" 1,"kern" 1}
+h1,h2,h3{letter-spacing:-.015em}
+h2{font-size:1.4rem;font-weight:800;margin-bottom:.8rem}
+header.top{border-bottom:2px solid var(--accent)}
+.badge{padding:3px 10px;font-size:.76rem}
+.badge.ok{background:#d3f0dd;color:#0f6a31}.badge.warn{background:#fdebb3;color:#7a5200}.badge.bad{background:#fbd8d3;color:#9a1c12}.badge.acc{background:#d3eeeb;color:#075e5a}
+.hero{background:#101c33;color:#eef2f8;border:0;border-radius:18px;padding:clamp(20px,5vw,40px);position:relative;overflow:hidden;box-shadow:0 8px 24px rgba(16,28,51,.18)}
+.hero::after{content:"";position:absolute;right:-40px;top:0;bottom:0;width:38%;background:repeating-linear-gradient(0deg,rgba(255,255,255,.05) 0 1px,transparent 1px 28px),repeating-linear-gradient(90deg,rgba(255,255,255,.05) 0 1px,transparent 1px 28px);pointer-events:none}
+.hero>*{position:relative;z-index:1}
+.hero h1{color:#fff;max-width:20ch}
+.hero p{color:#b9c4d9;max-width:56ch}
+.hero .chip{background:rgba(255,255,255,.12);color:#eef2f8}
+.hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin:16px 0 4px}
+.btn.gold{background:var(--gold);border-color:var(--gold);color:#101c33}
+.btn.light{background:transparent;border-color:rgba(255,255,255,.4);color:#fff}
+.hero-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:20px;max-width:640px}
+.hero-stats div{border-left:3px solid var(--accent);padding-left:10px}
+.hero-stats b{display:block;font-size:1.6rem;line-height:1.1;color:#fff;font-variant-numeric:tabular-nums}
+.hero-stats span{font-size:.8rem;color:#b9c4d9}
+:root[data-theme="dark"] .hero{background:#172542;box-shadow:none;border:1px solid var(--line)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .hero{background:#172542;border:1px solid var(--line)}}
+.judge-strip{padding:9px 14px;border-radius:10px;font-size:.86rem;gap:6px 16px}
+.judge-strip .steps{display:flex;flex-wrap:wrap;gap:2px 16px;margin:0;padding-left:18px;flex:1 1 280px}
+.judge-strip .steps li::marker{color:var(--gold);font-weight:700}
+.judge-strip .go{white-space:nowrap}
+.card.link{border-left:4px solid var(--accent);padding:16px 16px 14px}
+.card.link:hover{transform:none;box-shadow:0 2px 4px rgba(16,28,51,.08),0 8px 22px rgba(16,28,51,.1)}
+.card.link h3{font-size:1.12rem}
+.card.link.st-few{border-left-color:#c58a00}
+.card.link.st-full,.card.link.st-closed{border-left-color:var(--bad)}
+.card.link.st-closed{opacity:.8}
+.progress{height:9px}
+.kpi{border-top:3px solid var(--accent);padding:12px 14px}
+.kpi b{font-size:1.9rem;font-variant-numeric:tabular-nums}
+th{background:var(--gray-soft);position:sticky;top:0}
+tbody tr:hover td{background:var(--accent-soft)}
+.tablewrap{max-height:70vh;border:1px solid var(--line);border-radius:12px}
+.card .tablewrap{border:0}
+td select{border-radius:8px;min-height:36px;padding:6px 8px;font-weight:600}
+.chart .col i{background:var(--accent)}
+.chart .col:last-child i{background:#0b4f4c}
+.chart{border-bottom:1px solid var(--line)}
+/* ticket */
+.ticket{border:1px solid var(--accent);border-radius:16px;padding:0;background:var(--card);overflow:hidden;box-shadow:var(--shadow)}
+.tk-head{display:flex;justify-content:space-between;align-items:center;gap:8px;background:#101c33;color:#fff;padding:12px 16px;font-weight:700;font-size:.9rem}
+.tk-body{padding:16px}
+.tk-main{display:grid;grid-template-columns:1fr auto;gap:14px;align-items:start}
+@media(max-width:420px){.tk-main{grid-template-columns:1fr}}
+.tk-label{font-size:.78rem;color:var(--muted);font-weight:600}
+.ticket .id{font:800 1.7rem ui-monospace,Menlo,Consolas,monospace;letter-spacing:.06em;color:var(--accent);word-break:break-all}
+.tk-foot{border-top:2px dashed var(--line);padding:12px 16px;display:flex;gap:8px;flex-wrap:wrap;position:relative}
+.tk-foot::before,.tk-foot::after{content:"";position:absolute;top:-9px;width:16px;height:16px;border-radius:50%;background:var(--bg);border:1px solid var(--accent)}
+.tk-foot::before{left:-9px}.tk-foot::after{right:-9px}
+.qrbox{margin:0}
+/* nav on phones: all four items visible */
+nav.main .s{display:none}
+@media(max-width:640px){
+  nav.main{display:flex;justify-content:space-between;overflow:visible;gap:2px}
+  nav.main .l{display:none}nav.main .s{display:inline}
+  nav.main a,nav.main button{padding:7px 9px;font-size:.85rem}
+  .hero-stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .hero::after{display:none}
+  .hero h1{max-width:none}
+  .judge-strip{font-size:.84rem}
+}
+
+.wrap.bar{padding-left:16px;padding-right:16px}
+.judge-strip .steps{list-style:none;padding-left:0;counter-reset:st;gap:2px 18px}
+.judge-strip .steps li{counter-increment:st}
+.judge-strip .steps li::before{content:counter(st) ". ";color:var(--gold);font-weight:700}
+main.wrap{padding-top:20px;padding-bottom:60px}
+@media(max-width:640px){main.wrap{padding-top:12px}}
+.countdown{margin-bottom:4px}
+.ticket dd{font-size:.9rem}
+.chart .col i{flex:none}
+.chart{height:170px}
+.kpis{grid-template-columns:repeat(4,minmax(0,1fr))}
+@media(max-width:640px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+td .badge{white-space:nowrap}
+td[data-label=Seats]{white-space:nowrap}
+@media(max-width:400px){nav.main a,nav.main button{padding:6px 6px;font-size:.8rem}.wrap.bar{padding-left:12px;padding-right:12px}.wrap{padding:0 12px}.brand small{display:none}}
+@media(max-width:340px){nav.main a,nav.main button{padding:6px 3px;font-size:.74rem}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap bar">
+    <a class="brand" href="#/"><span class="logo">F</span><span>FestDesk<small id="orgName">DRMC IT Club</small></span></a>
+    <nav class="main" aria-label="Main">
+      <a href="#/" data-nav="home"><span class="l">Fests &amp; Events</span><span class="s">Events</span></a>
+      <a href="#/my" data-nav="my"><span class="l">My Registrations</span><span class="s">Registrations</span></a>
+      <a href="#/admin" data-nav="admin">Organizer</a>
+      <button type="button" id="themeBtn" aria-label="Toggle dark mode" title="Toggle dark mode">Theme</button>
+    </nav>
+  </div>
+</header>
+<main class="wrap" id="app" aria-live="polite"></main>
+<footer><div class="wrap">FestDesk &middot; open source (MIT) &middot; demo data is fictional &middot; built for the DRMC International Tech Carnival 2026 AI Web Development Contest</div></footer>
+<div class="toast-box" id="toasts"></div>
+<div id="modalRoot"></div>
+
+<script>
+(function(){
+'use strict';
+
+/* ---------- helpers ---------- */
+var KEY='festdesk_db_v3', SESS='festdesk_admin_v2', EMAILKEY='festdesk_email_v1', THEMEKEY='festdesk_theme_v1';
+var ADMIN_USER='admin', ADMIN_PASS='admin123';
+function $(s,r){return (r||document).querySelector(s);}
+function $$(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s));}
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function rid(n){var c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789',s='';for(var i=0;i<n;i++)s+=c[Math.floor(Math.random()*c.length)];return s;}
+function lsGet(k){try{return localStorage.getItem(k);}catch(e){return null;}}
+function lsSet(k,v){try{localStorage.setItem(k,v);}catch(e){}}
+function ssGet(k){try{return sessionStorage.getItem(k);}catch(e){return null;}}
+function ssSet(k,v){try{if(v==null)sessionStorage.removeItem(k);else sessionStorage.setItem(k,v);}catch(e){}}
+function fmt(iso){if(!iso)return '-';var d=new Date(iso);return d.toLocaleString('en-GB',{day:'numeric',month:'short',year:'numeric',hour:'numeric',minute:'2-digit'});}
+function fmtDay(iso){if(!iso)return '-';return new Date(iso).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});}
+function toLocalInput(iso){var d=new Date(iso);if(isNaN(d))return '';function p(n){return String(n).padStart(2,'0');}return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+'T'+p(d.getHours())+':'+p(d.getMinutes());}
+function fromLocalInput(v){var d=new Date(v);return isNaN(d)?null:d.toISOString();}
+function toast(msg,isErr){var b=$('#toasts');var t=document.createElement('div');t.className='toast'+(isErr?' err':'');t.textContent=msg;while(b.children.length>=3)b.firstChild.remove();b.appendChild(t);setTimeout(function(){t.remove();},3200);}
+
+/* ---------- seed data (generated relative to first visit so dates are always current) ---------- */
+function mulberry(a){return function(){a|=0;a=a+0x6D2B79F5|0;var t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+function seed(){
+  var rnd=mulberry(20261009), now=new Date();
+  function at(days,h,m){var d=new Date(now);d.setDate(d.getDate()+days);d.setHours(h,m||0,0,0);return d.toISOString();}
+  function pick(a){return a[Math.floor(rnd()*a.length)];}
+  var db={version:1,org:{name:'DRMC IT Club'},fests:[],events:[],regs:[]};
+  db.fests=[
+    {id:'f-tech',name:'Tech Carnival 2026',desc:'The flagship annual tech fest of DRMC IT Club: contests, robotics and gaming across two days.',venue:'DRMC Auditorium & Labs',start:at(21,9),end:at(22,18)},
+    {id:'f-winter',name:'Winter Tech Fest 2026',desc:'A cosy winter edition focused on hackathons, hands-on workshops and quizzes.',venue:'DRMC Seminar Hall',start:at(75,10),end:at(76,17)},
+    {id:'f-fresh',name:'Freshers Tech Fest 2027',desc:'A welcome event for new students: friendly coding challenges and an intro AI workshop.',venue:'DRMC Computer Lab 2',start:at(140,10),end:at(140,16)}
+  ];
+  db.events=[
+    {id:'e-ai',festId:'f-tech',title:'AI Web Development Contest',category:'Contest',desc:'Build a complete working web app in a fixed time using any AI tools you like. Judged on features, UX, responsiveness and creativity. Teams of 1 to 3.',start:at(21,10),venue:'Computer Lab 1',deadline:at(14,23,59),capacity:60,approval:'auto',info:'Free entry. Bring a laptop. Submit a public GitHub repo and a live link.',announce:'Final submission must include a public GitHub repo and a live Netlify (or similar) link.'},
+    {id:'e-prog',festId:'f-tech',title:'Programming Contest',category:'Contest',desc:'ACM-style individual contest with 8 problems of rising difficulty. C, C++, Java and Python are supported.',start:at(21,14),venue:'Computer Lab 2',deadline:at(15,23,59),capacity:80,approval:'auto',info:'Free entry. Individual participation only. Practice set is shared after registration.'},
+    {id:'e-robo',festId:'f-tech',title:'Robotics Challenge',category:'Robotics',desc:'Line-following and obstacle-avoidance race for student-built robots. Inspection happens one hour before the start.',start:at(22,10),venue:'Open Courtyard',deadline:at(12,23,59),capacity:24,approval:'manual',info:'Team of 2 to 4. Registration is confirmed after the organizers review your robot spec.'},
+    {id:'e-game',festId:'f-tech',title:'Gaming Tournament',category:'Gaming',desc:'1v1 knockout bracket on PC. Fair play rules apply and the bracket is published a day before the event.',start:at(22,14),venue:'Multimedia Room',deadline:at(10,23,59),capacity:20,approval:'auto',info:'Free entry. Bring your own peripherals if you prefer them.'},
+    {id:'e-quizq',festId:'f-tech',title:'Tech Quiz Qualifier',category:'Quiz',desc:'Online qualifier for the Tech Quiz final. 30 questions, 20 minutes.',start:at(16,18),venue:'Online',deadline:at(-1,23,59),capacity:100,approval:'auto',info:'Registration for this qualifier has already closed.'},
+    {id:'e-hack',festId:'f-winter',title:'24-Hour Hackathon',category:'Hackathon',desc:'Build something useful for campus life in 24 hours. Mentors on site, food provided.',start:at(75,10),venue:'DRMC Seminar Hall',deadline:at(60,23,59),capacity:50,approval:'manual',info:'Teams of 3 to 4. Organizers confirm teams based on the idea summary.'},
+    {id:'e-sec',festId:'f-winter',title:'Intro to Web Security Workshop',category:'Workshop',desc:'Hands-on workshop on the OWASP Top 10 using deliberately vulnerable practice apps in a safe lab.',start:at(76,11),venue:'Computer Lab 1',deadline:at(68,23,59),capacity:40,approval:'auto',info:'Bring a laptop with a modern browser. No prior experience needed.'},
+    {id:'e-quiz',festId:'f-winter',title:'Tech Quiz Final',category:'Quiz',desc:'Buzzer-round quiz on computing history, current tech and logic puzzles.',start:at(76,15),venue:'DRMC Seminar Hall',deadline:at(70,23,59),capacity:100,approval:'auto',info:'Teams of 2. Qualifier winners get seeded slots.'},
+    {id:'e-code',festId:'f-fresh',title:'Beginner Coding Challenge',category:'Contest',desc:'Friendly problem-solving contest for first-year students. Simple problems and lots of prizes.',start:at(140,10),venue:'Computer Lab 2',deadline:at(130,23,59),capacity:60,approval:'auto',info:'Open to first-year students only.'},
+    {id:'e-aiw',festId:'f-fresh',title:'AI Tools Workshop',category:'Workshop',desc:'Learn how to use AI assistants responsibly for study and projects. Includes prompt-writing practice.',start:at(140,13),venue:'Computer Lab 2',deadline:at(132,23,59),capacity:40,approval:'auto',info:'Bring a laptop. Free accounts on public AI tools are enough.'}
+  ];
+  var first=['Rahim','Karim','Nusrat','Tasnia','Arif','Sabbir','Mim','Farhan','Jannat','Rakib','Sumaiya','Tanvir','Maliha','Imran','Nabila','Shakib','Ritu','Hasan','Lamia','Fahim','Anika','Shihab','Priya','Zubair','Tahmina','Asif','Sadia','Mahin','Orpa','Rafi'];
+  var last=['Ahmed','Hossain','Islam','Khan','Rahman','Chowdhury','Akter','Uddin','Sarker','Mia','Das','Biswas','Karim','Sheikh','Talukder'];
+  var inst=['DRMC','Dhaka College','Notre Dame College','Viqarunnisa Noon School & College','Dhaka University','BUET','NSU','Jahangirnagar University'];
+  var counts={'e-ai':54,'e-prog':62,'e-robo':21,'e-game':20,'e-quizq':78,'e-hack':28,'e-sec':33,'e-quiz':45,'e-code':24,'e-aiw':18};
+  var n=0;
+  db.events.forEach(function(ev){
+    var active=counts[ev.id]||10, extras=ev.capacity>=40?3:1, total=active+extras, k;
+    for(k=0;k<total;k++){
+      var f=pick(first), l=pick(last), st;
+      if(k>=active) st=(k%2?'cancelled':'rejected');
+      else if(ev.approval==='manual') st=(rnd()<.55?'confirmed':'pending');
+      else st=(rnd()<.9?'confirmed':'pending');
+      n++;
+      db.regs.push({
+        id:'REG-'+(1000+n),
+        eventId:ev.id,
+        name:f+' '+l,
+        email:(f+'.'+l+n+'@example.com').toLowerCase(),
+        phone:'01'+pick(['3','5','6','7','8','9'])+String(Math.floor(rnd()*90000000+10000000)),
+        inst:pick(inst),
+        notes:'',
+        status:st,
+        createdAt:(function(){var d=new Date(at(-Math.floor(Math.pow(rnd(),1.6)*8),Math.floor(rnd()*12)+9,Math.floor(rnd()*60)));if(d>now)d=new Date(now-3600000*(1+rnd()*3));return d.toISOString();})()
+      });
+    }
+  });
+  // a few waitlist entries on a popular event for demo
+  ['e-game','e-robo'].forEach(function(eid,i){
+    db.regs.push({id:'REG-W'+ (900+i),eventId:eid,name:'Waitlist User '+(i+1),email:'waitlist'+(i+1)+'@example.com',phone:'0170000000'+i,inst:'DRMC',notes:'Waitlist demo',status:'waitlist',createdAt:at(-1,10,0),checkedIn:false});
+  });
+  return db;
+}
+function load(){
+  var raw=lsGet(KEY);
+  if(raw){try{var d=JSON.parse(raw);if(d&&d.fests&&d.events&&d.regs)return d;}catch(e){}}
+  var s=seed();lsSet(KEY,JSON.stringify(s));return s;
+}
+var db=load();
+function save(){lsSet(KEY,JSON.stringify(db));}
+
+/* ---------- domain ---------- */
+function fest(id){return db.fests.filter(function(f){return f.id===id;})[0];}
+function event(id){return db.events.filter(function(e){return e.id===id;})[0];}
+function regsOf(eid){return db.regs.filter(function(r){return r.eventId===eid;});}
+function isActive(r){return r.status==='pending'||r.status==='confirmed';}
+function taken(eid){return regsOf(eid).filter(isActive).length;}
+function seatsLeft(ev){return Math.max(0,ev.capacity-taken(ev.id));}
+function state(ev){
+  var now=new Date();
+  if(new Date(ev.deadline)<now)return {open:false,code:'closed',label:'Registration closed',reason:'The registration deadline for this event has passed.'};
+  if(seatsLeft(ev)<=0)return {open:false,code:'full',label:'Full',reason:'This event has reached its capacity.'};
+  if(seatsLeft(ev)<=Math.max(3,Math.ceil(ev.capacity*.15)))return {open:true,code:'few',label:'Few seats left',reason:''};
+  return {open:true,code:'open',label:'Open',reason:''};
+}
+function badgeFor(ev){var s=state(ev);var cls=s.code==='open'?'ok':s.code==='few'?'warn':'bad';return '<span class="badge '+cls+'">'+esc(s.label)+'</span>';}
+function statusBadge(st){var m={confirmed:'ok',pending:'warn',rejected:'bad',cancelled:'',waitlist:'acc'};return '<span class="badge '+(m[st]||'')+'">'+esc(st)+'</span>';}
+function bar(ev){var t=taken(ev.id),pct=Math.min(100,Math.round(t/ev.capacity*100));var c=pct>=100?'full':pct>=80?'mid':'';return '<div class="progress '+c+'" role="progressbar" aria-valuemin="0" aria-valuemax="'+ev.capacity+'" aria-valuenow="'+t+'" aria-label="Seats taken"><i style="width:'+pct+'%"></i></div><div class="small muted">'+t+' / '+ev.capacity+' seats taken'+(t<ev.capacity?' &middot; '+(ev.capacity-t)+' left':'')+'</div>';}
+function categories(){var s={};db.events.forEach(function(e){s[e.category]=1;});return Object.keys(s).sort();}
+function validEmail(e){return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(e);}
+function validPhone(p){var d=p.replace(/[\s\-+()]/g,'');return /^\d{7,15}$/.test(d);}
+
+function register(ev,d){
+  var s=state(ev);if(s.code==='closed')return {ok:false,errors:{_:s.reason}};
+  var errors={},name=(d.name||'').trim(),email=(d.email||'').trim().toLowerCase(),phone=(d.phone||'').trim(),inst=(d.inst||'').trim();
+  if(name.length<2)errors.name='Please enter your full name.';
+  if(!validEmail(email))errors.email='Enter a valid email address.';
+  if(!validPhone(phone))errors.phone='Enter a valid phone number (7-15 digits).';
+  if(inst.length<2)errors.inst='Enter your institution or class.';
+  if(!errors.email&&regsOf(ev.id).some(function(r){return r.email===email&&(isActive(r)||r.status==='waitlist');}))errors.email='This email is already registered for this event.';
+  if(Object.keys(errors).length)return {ok:false,errors:errors};
+  var reg={id:'REG-'+rid(5),eventId:ev.id,name:name,email:email,phone:phone,inst:inst,notes:(d.notes||'').trim(),status:s.code==='full'?'waitlist':ev.approval==='manual'?'pending':'confirmed',createdAt:new Date().toISOString()};
+  db.regs.push(reg);save();lsSet(EMAILKEY,email);
+  return {ok:true,reg:reg};
+}
+
+
+function waitlisted(eid){return regsOf(eid).filter(function(r){return r.status==='waitlist';}).length;}
+function promoteWaitlist(eid){
+  var ev=event(eid);if(!ev)return 0;var n=0;
+  var q=regsOf(eid).filter(function(r){return r.status==='waitlist';}).sort(function(a,b){return new Date(a.createdAt)-new Date(b.createdAt);});
+  while(q.length&&seatsLeft(ev)>0){var r=q.shift();r.status=ev.approval==='manual'?'pending':'confirmed';r.promotedAt=new Date().toISOString();n++;}
+  if(n){save();toast(n+' waitlisted '+(n===1?'person was':'people were')+' promoted');}
+  return n;
+}
+function cdText(iso,kind){
+  var ms=new Date(iso)-new Date();
+  if(ms<=0)return kind==='deadline'?'Registration closed':'Event has started';
+  var s=Math.floor(ms/1000),d=Math.floor(s/86400),h=Math.floor(s%86400/3600),m=Math.floor(s%3600/60),sec=s%60;
+  return (d?d+'d ':'')+h+'h '+m+'m '+sec+'s';
+}
+function countdownHtml(iso,kind){
+  var urgent=(new Date(iso)-new Date())<86400000;
+  return '<div class="countdown'+(urgent?' urgent':'')+'" data-cd="'+esc(iso)+'" data-kind="'+kind+'" aria-live="off">'+cdText(iso,kind)+'</div>';
+}
+setInterval(function(){$$('[data-cd]').forEach(function(el){el.textContent=cdText(el.getAttribute('data-cd'),el.getAttribute('data-kind'));});},1000);
+function dayChartHtml(){
+  var days=[],i,now=new Date();
+  for(i=6;i>=0;i--){var d=new Date(now);d.setHours(0,0,0,0);d.setDate(d.getDate()-i);days.push({t:d.getTime(),n:0,l:d.toLocaleDateString('en-GB',{weekday:'short'})});}
+  db.regs.forEach(function(r){var c=new Date(r.createdAt);c.setHours(0,0,0,0);days.forEach(function(x){if(x.t===c.getTime())x.n++;});});
+  var max=Math.max.apply(null,days.map(function(x){return x.n;}).concat([1])),sum=days.reduce(function(a,x){return a+x.n;},0);
+  return '<p class="muted small" style="margin:0">'+sum+' registrations in the last 7 days</p><div class="chart" role="img" aria-label="Registrations per day, last 7 days: '+days.map(function(x){return x.l+' '+x.n;}).join(', ')+'">'+days.map(function(x){return '<div class="col"><b>'+x.n+'</b><i style="height:'+Math.max(3,Math.round(x.n/max*100))+'px"></i><span>'+esc(x.l)+'</span></div>';}).join('')+'</div>';
+}
+
+/* ---------- UI state ---------- */
+var ui={q:'',cat:'',fest:'',openOnly:false,adminTab:'overview',pq:'',pst:'',pev:'',lastReg:null,myEmail:lsGet(EMAILKEY)||'',myChecked:false};
+function isAdmin(){return ssGet(SESS)==='1'||lsGet(SESS)==='1';}
+function setAdmin(on){if(on){ssSet(SESS,'1');lsSet(SESS,'1');}else{ssSet(SESS,null);try{localStorage.removeItem(SESS);}catch(e){}}}
+
+/* ---------- views ---------- */
+function eventCard(ev){
+  var f=fest(ev.festId);
+  return '<a class="card link st-'+state(ev).code+'" href="#/event/'+esc(ev.id)+'" data-testid="event-card">'+
+    '<div class="row between"><span class="badge acc">'+esc(ev.category)+'</span>'+badgeFor(ev)+'</div>'+
+    '<h3 style="margin-top:8px">'+esc(ev.title)+'</h3>'+
+    '<div class="meta"><span>'+esc(f?f.name:'')+'</span><span>'+esc(fmt(ev.start))+' &middot; '+esc(ev.venue)+'</span><span>Deadline: '+esc(fmt(ev.deadline))+'</span></div>'+
+    bar(ev)+'</a>';
+}
+function listEvents(){
+  var q=ui.q.trim().toLowerCase();
+  return db.events.filter(function(e){
+    if(ui.cat&&e.category!==ui.cat)return false;
+    if(ui.fest&&e.festId!==ui.fest)return false;
+    if(ui.openOnly&&!state(e).open)return false;
+    if(q){var f=fest(e.festId);var hay=(e.title+' '+e.desc+' '+e.category+' '+e.venue+' '+(f?f.name:'')).toLowerCase();if(hay.indexOf(q)<0)return false;}
+    return true;
+  }).sort(function(a,b){return new Date(a.start)-new Date(b.start);});
+}
+function resultsHtml(){
+  var list=listEvents();
+  if(!list.length)return '<div class="empty">No events match your search. Try clearing the filters.</div>';
+  return '<p class="muted small" data-testid="count">'+list.length+' event'+(list.length===1?'':'s')+' found</p><div class="grid">'+list.map(eventCard).join('')+'</div>';
+}
+function viewHome(){
+  var fests=db.fests.slice().sort(function(a,b){return new Date(a.start)-new Date(b.start);});
+  var totalReg=db.regs.filter(isActive).length;
+  var catOpts='<option value="">All categories</option>'+categories().map(function(c){return '<option'+(ui.cat===c?' selected':'')+'>'+esc(c)+'</option>';}).join('');
+  var festOpts='<option value="">All fests</option>'+db.fests.map(function(f){return '<option value="'+esc(f.id)+'"'+(ui.fest===f.id?' selected':'')+'>'+esc(f.name)+'</option>';}).join('');
+  var seatsOpen=db.events.filter(function(e){return state(e).open;}).reduce(function(n,e){return n+seatsLeft(e);},0);
+  return '<div class="judge-strip" data-testid="judge-strip"><strong>Judge demo &mdash; data preloaded</strong><ol class="steps"><li>Register</li><li>My Registrations</li><li>Organizer <code style="color:#e5c77a">admin</code> / <code style="color:#e5c77a">admin123</code></li></ol><a class="go" href="#/admin">Open organizer</a></div>'+
+    '<section class="hero"><h1>Club events. One platform. No Google Forms.</h1>'+
+    '<p class="lead">DRMC IT Club\'s fests, events and registrations in one place. See seats and deadlines, then register in under a minute.</p>'+
+    '<div class="hero-actions"><button class="btn gold" type="button" data-act="to-events">Browse events</button><a class="btn light" href="#/my">My registrations</a></div>'+
+    '<div class="hero-stats"><div><b>'+db.fests.length+'</b><span>Fests</span></div><div><b>'+db.events.length+'</b><span>Events</span></div><div><b>'+totalReg+'</b><span>Registrations</span></div><div><b>'+seatsOpen+'</b><span>Seats open</span></div></div></section>'+
+    '<section><h2>Fests</h2><div class="grid">'+fests.map(function(f){
+      var evs=db.events.filter(function(e){return e.festId===f.id;});
+      var open=evs.filter(function(e){return state(e).open;}).length;
+      return '<a class="card link" href="#/fest/'+esc(f.id)+'" data-testid="fest-card"><div class="row between"><span class="badge acc">'+evs.length+' events</span><span class="badge '+(open?'ok':'')+'">'+open+' open</span></div><h3 style="margin-top:8px">'+esc(f.name)+'</h3><div class="meta"><span>'+esc(fmtDay(f.start))+(fmtDay(f.end)!==fmtDay(f.start)?' to '+esc(fmtDay(f.end)):'')+'</span><span>'+esc(f.venue)+'</span></div><p class="muted small">'+esc(f.desc)+'</p></a>';
+    }).join('')+'</div></section>'+
+    '<section class="section" id="events"><h2>All events</h2>'+
+    '<div class="filters"><div class="grow"><label for="q">Search events</label><input id="q" type="search" placeholder="Search by title, venue, category..." value="'+esc(ui.q)+'" autocomplete="off"></div>'+
+    '<div><label for="cat">Category</label><select id="cat">'+catOpts+'</select></div>'+
+    '<div><label for="festf">Fest</label><select id="festf">'+festOpts+'</select></div>'+
+    '<div><label for="openonly"><input type="checkbox" id="openonly"'+(ui.openOnly?' checked':'')+'> Open only</label></div></div>'+
+    '<div id="results">'+resultsHtml()+'</div></section>';
+}
+function viewFest(id){
+  var f=fest(id);if(!f)return notFound();
+  var evs=db.events.filter(function(e){return e.festId===id;}).sort(function(a,b){return new Date(a.start)-new Date(b.start);});
+  return '<div class="crumbs"><a href="#/">'+esc(db.org.name)+'</a> / <a href="#/">Fests</a> / '+esc(f.name)+'</div>'+
+    '<section class="hero"><h1>'+esc(f.name)+'</h1><p>'+esc(f.desc)+'</p><div class="stats"><span class="chip">'+esc(fmtDay(f.start))+(fmtDay(f.end)!==fmtDay(f.start)?' to '+esc(fmtDay(f.end)):'')+'</span><span class="chip">'+esc(f.venue)+'</span><span class="chip">'+evs.length+' events</span></div></section>'+
+    '<h2>Events in this fest</h2>'+(evs.length?'<div class="grid">'+evs.map(eventCard).join('')+'</div>':'<div class="empty">No events have been added to this fest yet.</div>');
+}
+function formHtml(ev){
+  var s=state(ev);
+  var past=new Date(ev.deadline)<new Date();
+  if(past)return '<div class="card"><h3>Registration</h3><p><span class="badge bad">Registration closed</span></p><p class="muted">The registration deadline for this event has passed.</p></div>';
+  var full=s.code==='full';
+  var title=full?'Join the waitlist':'Register for this event';
+  var note=full?'<p class="muted">This event is full. Submit the form to join the waitlist. If a seat opens, you may be promoted automatically.</p>':'';
+  return '<form class="card" id="regForm" data-testid="reg-form" novalidate data-event="'+esc(ev.id)+'"><h3>'+title+'</h3>'+note+
+    '<div class="form-grid"><div class="full"><label for="rname">Full name</label><input id="rname" name="name" autocomplete="name" required><div class="err" data-err="name"></div></div>'+
+    '<div><label for="remail">Email</label><input id="remail" name="email" type="email" autocomplete="email" value="'+esc(ui.myEmail)+'" required><div class="err" data-err="email"></div></div>'+
+    '<div><label for="rphone">Phone</label><input id="rphone" name="phone" type="tel" autocomplete="tel" required><div class="err" data-err="phone"></div></div>'+
+    '<div class="full"><label for="rinst">Institution / class</label><input id="rinst" name="inst" required><div class="err" data-err="inst"></div></div>'+
+    '<div class="full"><label for="rnotes">Notes (team members, requirements) - optional</label><textarea id="rnotes" name="notes"></textarea></div></div>'+
+    '<div class="err" data-err="_"></div>'+
+    '<button class="btn" type="submit" style="margin-top:10px;width:100%">'+(full?'Join waitlist':'Submit registration')+'</button>'+
+    '<p class="muted small" style="margin-top:8px">'+(full?'You are placed in queue order and promoted automatically when a seat opens.':ev.approval==='manual'?'This event needs organizer approval. You will see your status under My Registrations.':'Your seat is confirmed instantly.')+'</p></form>';
+}
+function ticketHtml(reg,ev){
+  var f=fest(ev.festId),wl=reg.status==='waitlist',ok=reg.status==='confirmed';
+  var head=wl?'You are on the waitlist':ok?'You are registered':'Registration received';
+  var msg=wl?'No seat yet. If one opens you are promoted automatically and the status changes to confirmed.':ok?'Show this ID or QR code at the venue check-in desk.':'The organizers will review your registration. Check its status under My Registrations.';
+  var qr='https://api.qrserver.com/v1/create-qr-code/?size=140x140&margin=0&data='+encodeURIComponent(reg.id+'|'+ev.id+'|'+reg.email);
+  return '<div class="ticket" data-testid="confirmation"><div class="tk-head"><span>FestDesk &middot; '+esc(db.org.name)+'</span>'+statusBadge(reg.status)+'</div>'+
+    '<div class="tk-body"><h3 style="margin:0 0 4px">'+head+'</h3><p class="muted small">'+msg+'</p>'+
+    '<div class="tk-main"><div><div class="tk-label">Registration ID</div><div class="id" data-testid="reg-id">'+esc(reg.id)+'</div>'+
+    '<dl class="kv" style="margin-top:12px;grid-template-columns:58px 1fr"><dt>Name</dt><dd>'+esc(reg.name)+'</dd><dt>Event</dt><dd>'+esc(ev.title)+'</dd><dt>Fest</dt><dd>'+esc(f?f.name:'')+'</dd><dt>When</dt><dd>'+esc(fmt(ev.start))+'</dd><dt>Venue</dt><dd>'+esc(ev.venue)+'</dd><dt>Email</dt><dd style="overflow-wrap:anywhere">'+esc(reg.email)+'</dd></dl></div>'+
+    '<div class="qrbox"><img class="qrimg" src="'+qr+'" alt="Ticket QR for '+esc(reg.id)+'" width="140" height="140"></div></div></div>'+
+    '<div class="tk-foot no-print"><button class="btn ghost sm" data-act="print" type="button">Print ticket</button><a class="btn sm" href="#/my">My registrations</a></div></div>';
+}
+function viewEvent(id){
+  var ev=event(id);if(!ev)return notFound();
+  var f=fest(ev.festId),s=state(ev);
+  var right=(ui.lastReg&&ui.lastReg.eventId===ev.id)?ticketHtml(ui.lastReg,ev):formHtml(ev);
+  return '<div class="crumbs"><a href="#/">'+esc(db.org.name)+'</a> / <a href="#/">Fests</a> / <a href="#/fest/'+esc(ev.festId)+'">'+esc(f?f.name:'')+'</a> / '+esc(ev.title)+'</div>'+
+    '<div class="two"><section class="card"><div class="row between"><span class="badge acc">'+esc(ev.category)+'</span>'+badgeFor(ev)+'</div>'+
+    '<h1 style="margin-top:10px" data-testid="event-title">'+esc(ev.title)+'</h1><p>'+esc(ev.desc)+'</p>'+
+    '<dl class="kv"><dt>Date &amp; time</dt><dd>'+esc(fmt(ev.start))+'</dd><dt>Venue</dt><dd>'+esc(ev.venue)+'</dd><dt>Deadline</dt><dd data-testid="deadline">'+esc(fmt(ev.deadline))+'</dd><dt>Capacity</dt><dd>'+ev.capacity+' seats ('+seatsLeft(ev)+' left)'+(waitlisted(ev.id)?' · '+waitlisted(ev.id)+' waitlisted':'')+'</dd><dt>Approval</dt><dd>'+(ev.approval==='manual'?'Organizer approval required':'Instant confirmation')+'</dd></dl>'+
+    '<h4 class="small muted" style="margin:12px 0 4px">Registration closes in</h4>'+countdownHtml(ev.deadline,'deadline')+
+    (new Date(ev.start)>new Date()?'<h4 class="small muted" style="margin:12px 0 4px">Event starts in</h4>'+countdownHtml(ev.start,'start'):'')+
+    bar(ev)+
+    (ev.announce?'<div class="announce"><h4>Announcement</h4><p style="margin:0">'+esc(ev.announce)+'</p></div>':'')+
+    '<h3 style="margin-top:14px">Registration information</h3><p class="muted">'+esc(ev.info)+'</p></section>'+
+    '<div>'+right+'</div></div>';
+}
+function viewMy(){
+  var email=ui.myEmail.trim().toLowerCase();
+  var out='<h1>My Registrations</h1><p class="muted">Enter the email you registered with to view, edit or cancel your registrations.</p>'+
+    '<form class="card" id="myForm" style="margin-bottom:16px" novalidate><div class="row" style="align-items:flex-end"><div style="flex:1;min-width:220px"><label for="myemail">Email</label><input id="myemail" type="email" value="'+esc(ui.myEmail)+'" autocomplete="email"></div><button class="btn" type="submit">Find my registrations</button></div></form>';
+  if(ui.myChecked||email){
+    var mine=db.regs.filter(function(r){return r.email===email;}).sort(function(a,b){return new Date(b.createdAt)-new Date(a.createdAt);});
+    if(!email||!validEmail(email))out+='<div class="empty">Enter a valid email address.</div>';
+    else if(!mine.length)out+='<div class="empty" data-testid="my-empty">No registrations found for '+esc(email)+'.</div>';
+    else out+='<div class="grid" data-testid="my-list">'+mine.map(function(r){
+      var ev=event(r.eventId);if(!ev)return '';
+      var live=isActive(r)||r.status==='waitlist',canCancel=live&&new Date(ev.start)>new Date();
+      return '<div class="card"><div class="row between">'+statusBadge(r.status)+'<span class="muted small">'+esc(r.id)+'</span></div><h3 style="margin-top:8px"><a href="#/event/'+esc(ev.id)+'" style="color:inherit">'+esc(ev.title)+'</a></h3>'+
+        '<div class="meta"><span>'+esc(fmt(ev.start))+' &middot; '+esc(ev.venue)+'</span><span>Registered '+esc(fmt(r.createdAt))+'</span><span>'+esc(r.name)+' &middot; '+esc(r.phone)+'</span></div>'+
+        '<div class="row">'+(live?'<button class="btn sm" data-act="ticket-my" data-id="'+esc(r.id)+'">View ticket</button>':'')+(live?'<button class="btn ghost sm" data-act="edit-my" data-id="'+esc(r.id)+'">Edit details</button>':'')+(canCancel?'<button class="btn danger ghost sm" data-act="cancel-my" data-id="'+esc(r.id)+'">Cancel</button>':'')+'</div></div>';
+    }).join('')+'</div>';
+  }
+  return out;
+}
+function notFound(){return '<div class="empty"><h2>Not found</h2><p>That page does not exist.</p><a class="btn" href="#/">Back to events</a></div>';}
+
+/* ---------- admin ---------- */
+function viewAdminLogin(){
+  return '<div style="max-width:420px;margin:30px auto"><form class="card" id="loginForm" novalidate data-testid="login-form"><h2>Organizer login</h2>'+
+    '<p class="muted small">Demo credentials are pre-filled for judges.</p>'+
+    '<div class="announce" style="margin:10px 0"><strong>Username:</strong> admin<br><strong>Password:</strong> admin123</div>'+
+    '<label for="lu">Username</label><input id="lu" name="username" autocomplete="username" value="admin">'+
+    '<label for="lp" style="margin-top:10px">Password</label><input id="lp" name="password" type="password" autocomplete="current-password" value="admin123">'+
+    '<div class="err" id="lerr"></div>'+
+    '<button class="btn" style="width:100%;margin-top:12px" type="submit" data-testid="login-submit">Sign in</button>'+
+    '<button class="btn ghost" style="width:100%;margin-top:8px" type="button" data-act="demo-login">One-tap demo login</button>'+
+    '</form></div>';
+}
+function statsFor(){
+  var c={confirmed:0,pending:0,rejected:0,cancelled:0,waitlist:0};db.regs.forEach(function(r){c[r.status]=(c[r.status]||0)+1;});return c;
+}
+function stackBar(c,total){
+  var cols={confirmed:'var(--ok)',pending:'var(--warn)',waitlist:'var(--accent)',rejected:'var(--bad)',cancelled:'var(--muted)'};
+  if(!total)return '';
+  return '<div class="stack" role="img" aria-label="Registration status breakdown">'+Object.keys(cols).map(function(k){return '<i style="width:'+(c[k]/total*100)+'%;background:'+cols[k]+'"></i>';}).join('')+'</div><div class="legend">'+Object.keys(cols).map(function(k){return '<span style="--c:'+cols[k]+'">'+k+' '+c[k]+'</span>';}).join('')+'</div>';
+}
+function adminOverview(){
+  var c=statsFor(),total=db.regs.length;
+  var rows=db.events.slice().sort(function(a,b){return new Date(a.start)-new Date(b.start);}).map(function(ev){
+    var cc={confirmed:0,pending:0,rejected:0,cancelled:0,waitlist:0};regsOf(ev.id).forEach(function(r){cc[r.status]++;});
+    return '<tr><td data-label="Event">'+esc(ev.title)+'</td><td data-label="Fest">'+esc((fest(ev.festId)||{}).name||'')+'</td><td data-label="Seats">'+taken(ev.id)+' / '+ev.capacity+'</td><td data-label="Confirmed">'+cc.confirmed+'</td><td data-label="Pending">'+cc.pending+'</td><td data-label="Status">'+badgeFor(ev)+'</td><td data-label="Fill">'+bar(ev)+'</td></tr>';
+  }).join('');
+  return '<div class="kpis"><div class="kpi"><b>'+db.fests.length+'</b><span>Fests</span></div><div class="kpi"><b>'+db.events.length+'</b><span>Events</span></div><div class="kpi"><b data-testid="kpi-total">'+total+'</b><span>Total registrations</span></div><div class="kpi"><b>'+c.confirmed+'</b><span>Confirmed</span></div><div class="kpi"><b>'+c.pending+'</b><span>Pending review</span></div><div class="kpi"><b>'+db.events.filter(function(e){return !state(e).open;}).length+'</b><span>Closed / full events</span></div><div class="kpi"><b>'+c.waitlist+'</b><span>On waitlist</span></div><div class="kpi"><b>'+db.regs.filter(function(r){return r.checkedIn;}).length+'</b><span>Checked in</span></div></div>'+
+    '<div class="card" style="margin-bottom:16px"><h3>Registration status</h3>'+stackBar(c,total)+'</div>'+'<div class="card" style="margin-bottom:16px"><h3>Registrations (last 7 days)</h3>'+dayChartHtml()+'</div>'+
+    '<div class="card"><h3>Events overview</h3><div class="tablewrap"><table class="stackable"><thead><tr><th>Event</th><th>Fest</th><th>Seats</th><th>Confirmed</th><th>Pending</th><th>State</th><th style="min-width:160px">Fill</th></tr></thead><tbody>'+rows+'</tbody></table></div></div>';
+}
+function adminManage(){
+  var f=db.fests.map(function(x){
+    return '<tr><td data-label="Fest">'+esc(x.name)+'</td><td data-label="Dates">'+esc(fmtDay(x.start))+'</td><td data-label="Events">'+db.events.filter(function(e){return e.festId===x.id;}).length+'</td><td data-label="Actions"><div class="row"><button class="btn ghost sm" data-act="edit-fest" data-id="'+esc(x.id)+'">Edit</button><button class="btn danger ghost sm" data-act="del-fest" data-id="'+esc(x.id)+'">Delete</button></div></td></tr>';
+  }).join('');
+  var e=db.events.map(function(x){
+    return '<tr><td data-label="Event">'+esc(x.title)+'</td><td data-label="Fest">'+esc((fest(x.festId)||{}).name||'')+'</td><td data-label="Category">'+esc(x.category)+'</td><td data-label="Seats">'+taken(x.id)+' / '+x.capacity+'</td><td data-label="Deadline">'+esc(fmtDay(x.deadline))+'</td><td data-label="Actions"><div class="row"><button class="btn ghost sm" data-act="edit-event" data-id="'+esc(x.id)+'">Edit</button><button class="btn danger ghost sm" data-act="del-event" data-id="'+esc(x.id)+'">Delete</button></div></td></tr>';
+  }).join('');
+  return '<div class="card" style="margin-bottom:16px"><div class="row between"><h3 style="margin:0">Fests</h3><button class="btn sm" data-act="new-fest" data-testid="new-fest">+ New fest</button></div><div class="tablewrap" style="margin-top:10px"><table class="stackable"><thead><tr><th>Fest</th><th>Starts</th><th>Events</th><th></th></tr></thead><tbody>'+f+'</tbody></table></div></div>'+
+    '<div class="card"><div class="row between"><h3 style="margin:0">Events</h3><button class="btn sm" data-act="new-event" data-testid="new-event">+ New event</button></div><div class="tablewrap" style="margin-top:10px"><table class="stackable"><thead><tr><th>Event</th><th>Fest</th><th>Category</th><th>Seats</th><th>Deadline</th><th></th></tr></thead><tbody>'+e+'</tbody></table></div></div>';
+}
+function partList(){
+  var q=ui.pq.trim().toLowerCase();
+  return db.regs.filter(function(r){
+    if(ui.pev&&r.eventId!==ui.pev)return false;
+    if(ui.pst&&r.status!==ui.pst)return false;
+    if(q&&(r.name+' '+r.email+' '+r.phone+' '+r.id+' '+r.inst).toLowerCase().indexOf(q)<0)return false;
+    return true;
+  }).sort(function(a,b){return new Date(b.createdAt)-new Date(a.createdAt);});
+}
+function partTable(){
+  var list=partList();
+  if(!list.length)return '<div class="empty">No participants match these filters.</div>';
+  var shown=list.slice(0,200);
+  var opts=['pending','confirmed','waitlist','rejected','cancelled'];
+  return '<p class="muted small" data-testid="pcount">'+list.length+' participant'+(list.length===1?'':'s')+(list.length>shown.length?' (showing first 200)':'')+'</p><div class="tablewrap"><table class="stackable"><thead><tr><th>ID</th><th>Name</th><th>Contact</th><th>Event</th><th>Registered</th><th>Status</th><th></th></tr></thead><tbody>'+
+    shown.map(function(r){var ev=event(r.eventId);return '<tr data-testid="prow"><td data-label="ID">'+esc(r.id)+'</td><td data-label="Name"><span class="v">'+esc(r.name)+'<span class="muted small" style="display:block">'+esc(r.inst)+'</span></span></td><td data-label="Contact"><span class="v">'+esc(r.email)+'<span class="muted small" style="display:block">'+esc(r.phone)+'</span></span></td><td data-label="Event">'+esc(ev?ev.title:'(deleted)')+'</td><td data-label="Registered">'+esc(fmtDay(r.createdAt))+'</td><td data-label="Status"><select data-act="setstatus" data-id="'+esc(r.id)+'" aria-label="Status for '+esc(r.name)+'">'+opts.map(function(o){return '<option'+(o===r.status?' selected':'')+'>'+o+'</option>';}).join('')+'</select></td><td data-label=""><button class="btn danger ghost sm" data-act="del-reg" data-id="'+esc(r.id)+'">Remove</button></td></tr>';}).join('')+'</tbody></table></div>';
+}
+function adminParticipants(){
+  var evOpts='<option value="">All events</option>'+db.events.map(function(e){return '<option value="'+esc(e.id)+'"'+(ui.pev===e.id?' selected':'')+'>'+esc(e.title)+'</option>';}).join('');
+  var stOpts='<option value="">All statuses</option>'+['pending','confirmed','waitlist','rejected','cancelled'].map(function(s){return '<option'+(ui.pst===s?' selected':'')+'>'+s+'</option>';}).join('');
+  return '<div class="filters" style="grid-template-columns:2fr 1.3fr 1fr auto"><div class="grow"><label for="pq">Search participants</label><input id="pq" type="search" placeholder="Name, email, phone, ID..." value="'+esc(ui.pq)+'" autocomplete="off"></div><div><label for="pev">Event</label><select id="pev">'+evOpts+'</select></div><div><label for="pst">Status</label><select id="pst">'+stOpts+'</select></div><div><button class="btn ghost" data-act="csv" type="button">Export CSV</button></div></div><div id="ptable">'+partTable()+'</div>';
+}
+
+function adminCheckin(){
+  var q=(ui.ciq||'').trim().toLowerCase();
+  var hits=q?db.regs.filter(function(r){return r.id.toLowerCase()===q||r.email.toLowerCase()===q;}):[];
+  var done=db.regs.filter(function(r){return r.checkedIn;}).length;
+  var html='<div class="card"><div class="row between"><h3 style="margin:0">Ticket check-in</h3><span class="badge ok">'+done+' checked in</span></div><p class="muted">Type the registration ID printed on the ticket or the participant email.</p>'+
+    '<form id="checkinForm" class="row" style="align-items:flex-end" novalidate><div style="flex:1;min-width:200px"><label for="ciq">Registration ID or email</label><input id="ciq" name="ciq" value="'+esc(ui.ciq||'')+'" placeholder="REG-XXXXX or name@email.com" autocomplete="off"></div><button class="btn" type="submit">Look up</button></form>';
+  if(q&&!hits.length)html+='<div class="empty" style="margin-top:12px">No registration found for <strong>'+esc(ui.ciq)+'</strong>. Check the ID or email and try again.</div>';
+  hits.forEach(function(hit){
+    var ev=event(hit.eventId)||{},ok=hit.status==='confirmed'||hit.status==='pending';
+    html+='<div class="checkin-ok" style="margin-top:12px"><div class="row between"><strong>'+esc(hit.name)+'</strong>'+statusBadge(hit.status)+'</div>'+
+      '<p class="muted" style="margin:6px 0">'+esc(hit.id)+' &middot; '+esc(ev.title||'')+' &middot; '+esc(hit.email)+'</p>'+
+      (hit.checkedIn?'<p style="margin:0"><span class="badge ok">Already checked in</span> '+(hit.checkedInAt?esc(fmt(hit.checkedInAt)):'')+'</p>':
+        ok?'<button class="btn" data-act="do-checkin" data-id="'+esc(hit.id)+'">Mark checked in</button>':
+        '<p class="muted" style="margin:0">Only confirmed or pending tickets can be checked in (this one is '+esc(hit.status)+').</p>')+'</div>';
+  });
+  return html+'</div>';
+}
+function viewAdmin(){
+  if(!isAdmin())return viewAdminLogin();
+  var tabs=[['overview','Overview'],['participants','Participants'],['checkin','Check-in'],['manage','Fests & Events']];
+  var body=ui.adminTab==='participants'?adminParticipants():ui.adminTab==='checkin'?adminCheckin():ui.adminTab==='manage'?adminManage():adminOverview();
+  return '<div class="row between" style="margin-bottom:12px"><h1 style="margin:0">Organizer dashboard</h1><div class="row"><button class="btn ghost sm" data-act="reset" type="button">Reset demo data</button><button class="btn ghost sm" data-act="logout" type="button">Sign out</button></div></div>'+
+    '<div class="tabs" role="tablist">'+tabs.map(function(t){return '<button role="tab" data-act="tab" data-tab="'+t[0]+'" class="'+(ui.adminTab===t[0]?'active':'')+'" aria-selected="'+(ui.adminTab===t[0])+'">'+t[1]+'</button>';}).join('')+'</div>'+body;
+}
+
+/* ---------- modal forms ---------- */
+function openModal(html){$('#modalRoot').innerHTML='<div class="modal-bg" data-act="modal-bg"><div class="modal" role="dialog" aria-modal="true">'+html+'</div></div>';var f=$('#modalRoot input,#modalRoot select,#modalRoot textarea');if(f)f.focus();}
+function closeModal(){$('#modalRoot').innerHTML='';}
+function festForm(f){
+  f=f||{};
+  return '<form id="festForm" data-id="'+esc(f.id||'')+'" novalidate><h2>'+(f.id?'Edit fest':'New fest')+'</h2><div class="form-grid">'+
+    '<div class="full"><label for="fn">Fest name</label><input id="fn" name="name" value="'+esc(f.name)+'"><div class="err" data-err="name"></div></div>'+
+    '<div class="full"><label for="fd">Description</label><textarea id="fd" name="desc">'+esc(f.desc)+'</textarea></div>'+
+    '<div class="full"><label for="fv">Venue</label><input id="fv" name="venue" value="'+esc(f.venue)+'"></div>'+
+    '<div><label for="fs">Starts</label><input id="fs" type="datetime-local" name="start" value="'+esc(f.start?toLocalInput(f.start):'')+'"><div class="err" data-err="start"></div></div>'+
+    '<div><label for="fe">Ends</label><input id="fe" type="datetime-local" name="end" value="'+esc(f.end?toLocalInput(f.end):'')+'"><div class="err" data-err="end"></div></div></div>'+
+    '<div class="row" style="margin-top:14px"><button class="btn" type="submit">Save fest</button><button class="btn ghost" type="button" data-act="close">Cancel</button></div></form>';
+}
+function eventForm(e){
+  e=e||{};
+  var fo=db.fests.map(function(f){return '<option value="'+esc(f.id)+'"'+(e.festId===f.id?' selected':'')+'>'+esc(f.name)+'</option>';}).join('');
+  var cats=['Contest','Workshop','Hackathon','Robotics','Gaming','Quiz','Seminar','Other'];
+  var catOpts=cats.map(function(c){return '<option'+(e.category===c?' selected':'')+'>'+c+'</option>';}).join('');
+  return '<form id="eventForm" data-id="'+esc(e.id||'')+'" novalidate><h2>'+(e.id?'Edit event':'New event')+'</h2><div class="form-grid">'+
+    '<div class="full"><label for="et">Title</label><input id="et" name="title" value="'+esc(e.title)+'"><div class="err" data-err="title"></div></div>'+
+    '<div><label for="ef">Fest</label><select id="ef" name="festId">'+fo+'</select></div>'+
+    '<div><label for="ec">Category</label><select id="ec" name="category">'+catOpts+'</select></div>'+
+    '<div class="full"><label for="ed">Description</label><textarea id="ed" name="desc">'+esc(e.desc)+'</textarea></div>'+
+    '<div><label for="es">Starts</label><input id="es" type="datetime-local" name="start" value="'+esc(e.start?toLocalInput(e.start):'')+'"><div class="err" data-err="start"></div></div>'+
+    '<div><label for="ev">Venue</label><input id="ev" name="venue" value="'+esc(e.venue)+'"></div>'+
+    '<div><label for="edl">Registration deadline</label><input id="edl" type="datetime-local" name="deadline" value="'+esc(e.deadline?toLocalInput(e.deadline):'')+'"><div class="err" data-err="deadline"></div></div>'+
+    '<div><label for="ecap">Capacity</label><input id="ecap" type="number" min="1" name="capacity" value="'+esc(e.capacity||50)+'"><div class="err" data-err="capacity"></div></div>'+
+    '<div class="full"><label for="eap">Approval</label><select id="eap" name="approval"><option value="auto"'+(e.approval!=='manual'?' selected':'')+'>Instant confirmation</option><option value="manual"'+(e.approval==='manual'?' selected':'')+'>Organizer approval required</option></select></div>'+
+    '<div class="full"><label for="ei">Registration information</label><textarea id="ei" name="info">'+esc(e.info||'')+'</textarea></div>'+
+    '<div class="full"><label for="eann">Announcement (optional)</label><textarea id="eann" name="announce" placeholder="Shown on the public event page">'+esc(e.announce||'')+'</textarea></div></div>'+
+    '<div class="err" data-err="_"></div><div class="row" style="margin-top:14px"><button class="btn" type="submit">Save event</button><button class="btn ghost" type="button" data-act="close">Cancel</button></div></form>';
+}
+function myEditForm(r){
+  return '<form id="myEditForm" data-id="'+esc(r.id)+'" novalidate><h2>Edit my details</h2><div class="form-grid"><div class="full"><label for="mn">Full name</label><input id="mn" name="name" value="'+esc(r.name)+'"><div class="err" data-err="name"></div></div><div><label for="mp">Phone</label><input id="mp" name="phone" value="'+esc(r.phone)+'"><div class="err" data-err="phone"></div></div><div><label for="mi">Institution / class</label><input id="mi" name="inst" value="'+esc(r.inst)+'"><div class="err" data-err="inst"></div></div></div><div class="row" style="margin-top:14px"><button class="btn" type="submit">Save</button><button class="btn ghost" type="button" data-act="close">Cancel</button></div></form>';
+}
+function formData(form){var o={};$$('input,select,textarea',form).forEach(function(el){if(el.name)o[el.name]=el.type==='checkbox'?el.checked:el.value;});return o;}
+function showErrors(form,errors){$$('[data-err]',form).forEach(function(el){el.textContent=errors[el.getAttribute('data-err')]||'';});}
+
+/* ---------- csv ---------- */
+function csvCell(v){var s=String(v==null?'':v);if(/^[=+\-@]/.test(s))s="'"+s;return '"'+s.replace(/"/g,'""')+'"';}
+function exportCsv(){
+  var rows=[['Registration ID','Name','Email','Phone','Institution','Event','Fest','Status','Checked in','Registered at','Notes']];
+  partList().forEach(function(r){var ev=event(r.eventId)||{};rows.push([r.id,r.name,r.email,r.phone,r.inst,ev.title||'',(fest(ev.festId)||{}).name||'',r.status,r.checkedIn?'yes':'no',r.createdAt,r.notes]);});
+  var csv=rows.map(function(r){return r.map(csvCell).join(',');}).join('\r\n');
+  try{var blob=new Blob([csv],{type:'text/csv'});var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='participants.csv';document.body.appendChild(a);a.click();a.remove();toast('CSV exported ('+(rows.length-1)+' rows)');}
+  catch(e){toast('Export is not supported in this browser',true);}
+  return csv;
+}
+window.__festdeskCsv=exportCsv;
+
+/* ---------- router ---------- */
+function route(){
+  var h=location.hash.replace(/^#/,'')||'/',p=h.split('/').filter(Boolean),html,nav='home';
+  if(!p.length)html=viewHome();
+  else if(p[0]==='fest')html=viewFest(p[1]);
+  else if(p[0]==='event')html=viewEvent(p[1]);
+  else if(p[0]==='my'){html=viewMy();nav='my';}
+  else if(p[0]==='admin'){html=viewAdmin();nav='admin';}
+  else html=notFound();
+  $('#app').innerHTML=html;
+  $$('nav.main a').forEach(function(a){a.classList.toggle('active',a.getAttribute('data-nav')===nav);});
+  document.title=(p[0]==='admin'?'Organizer':p[0]==='my'?'My Registrations':p[0]==='event'&&event(p[1])?event(p[1]).title:p[0]==='fest'&&fest(p[1])?fest(p[1]).name:'Fests & Events')+' · FestDesk';
+  if(p[0]!=='event')ui.lastReg=null;
+  window.scrollTo(0,0);
+}
+function rerender(){var y=window.scrollY;var h=location.hash.replace(/^#/,'')||'/';var p=h.split('/').filter(Boolean);var html;
+  if(!p.length)html=viewHome();else if(p[0]==='fest')html=viewFest(p[1]);else if(p[0]==='event')html=viewEvent(p[1]);else if(p[0]==='my')html=viewMy();else if(p[0]==='admin')html=viewAdmin();else html=notFound();
+  $('#app').innerHTML=html;window.scrollTo(0,y);}
+window.addEventListener('hashchange',route);
+
+/* ---------- events ---------- */
+document.addEventListener('input',function(e){
+  var t=e.target;
+  if(t.id==='q'){ui.q=t.value;$('#results').innerHTML=resultsHtml();}
+  else if(t.id==='pq'){ui.pq=t.value;$('#ptable').innerHTML=partTable();}
+  if(t.form&&t.name){var er=$('[data-err="'+t.name+'"]',t.form);if(er)er.textContent='';var g=$('[data-err="_"]',t.form);if(g)g.textContent='';}
+});
+document.addEventListener('change',function(e){
+  var t=e.target,act=t.getAttribute&&t.getAttribute('data-act');
+  if(t.id==='cat'){ui.cat=t.value;$('#results').innerHTML=resultsHtml();}
+  else if(t.id==='festf'){ui.fest=t.value;$('#results').innerHTML=resultsHtml();}
+  else if(t.id==='openonly'){ui.openOnly=t.checked;$('#results').innerHTML=resultsHtml();}
+  else if(t.id==='pev'){ui.pev=t.value;$('#ptable').innerHTML=partTable();}
+  else if(t.id==='pst'){ui.pst=t.value;$('#ptable').innerHTML=partTable();}
+  else if(act==='setstatus'){
+    if(!isAdmin())return;
+    var r=db.regs.filter(function(x){return x.id===t.getAttribute('data-id');})[0];if(!r)return;
+    var ev=event(r.eventId),was=isActive(r),next=t.value;
+    if(next==='cancelled'||next==='rejected'){r.status=next;save();promoteWaitlist(r.eventId);toast('Status updated to '+next);rerender();return;}
+    if(!was&&(next==='pending'||next==='confirmed')&&ev&&seatsLeft(ev)<=0){toast('No seats left for this event. Raise its capacity first.',true);t.value=r.status;return;}
+    r.status=next;save();if(next==='waitlist')promoteWaitlist(r.eventId);toast('Status updated to '+next);$('#ptable').innerHTML=partTable();
+  }
+});
+document.addEventListener('click',function(e){
+  var el=e.target.closest?e.target.closest('[data-act]'):null;if(!el)return;
+  var act=el.getAttribute('data-act'),id=el.getAttribute('data-id');
+  if(act==='modal-bg'){if(e.target===el)closeModal();return;}
+  if(act==='close'){closeModal();return;}
+  if(act==='print'){window.print();return;}
+  if(act==='to-events'){var te=document.getElementById('events');if(te)te.scrollIntoView({behavior:'smooth',block:'start'});return;}
+  if(act==='demo-login'){setAdmin(true);toast('Signed in as organizer');rerender();return;}
+  if(act==='ticket-my'){var tr=db.regs.filter(function(x){return x.id===id;})[0];if(tr){ui.lastReg=tr;location.hash='#/event/'+tr.eventId;}return;}
+  if(act==='do-checkin'){var cr=db.regs.filter(function(x){return x.id===id;})[0];if(cr&&!cr.checkedIn){cr.checkedIn=true;cr.checkedInAt=new Date().toISOString();save();toast(cr.name+' checked in');rerender();}return;}
+  if(act==='tab'){ui.adminTab=el.getAttribute('data-tab');rerender();return;}
+  if(act==='logout'){setAdmin(false);toast('Signed out');rerender();return;}
+  if(act==='reset'){if(confirm('Reset all demo data? Registrations you added will be lost.')){db=seed();save();ui.lastReg=null;toast('Demo data reset');rerender();}return;}
+  if(act==='csv'){exportCsv();return;}
+  if(act==='new-fest'){openModal(festForm());return;}
+  if(act==='edit-fest'){openModal(festForm(fest(id)));return;}
+  if(act==='new-event'){if(!db.fests.length){toast('Create a fest first',true);return;}openModal(eventForm());return;}
+  if(act==='edit-event'){openModal(eventForm(event(id)));return;}
+  if(act==='del-fest'){var n=db.events.filter(function(x){return x.festId===id;}).length;if(confirm('Delete this fest'+(n?' and its '+n+' event(s) with all registrations':'')+'?')){var evIds=db.events.filter(function(x){return x.festId===id;}).map(function(x){return x.id;});db.regs=db.regs.filter(function(r){return evIds.indexOf(r.eventId)<0;});db.events=db.events.filter(function(x){return x.festId!==id;});db.fests=db.fests.filter(function(x){return x.id!==id;});save();toast('Fest deleted');rerender();}return;}
+  if(act==='del-event'){if(confirm('Delete this event and all its registrations?')){db.regs=db.regs.filter(function(r){return r.eventId!==id;});db.events=db.events.filter(function(x){return x.id!==id;});save();toast('Event deleted');rerender();}return;}
+  if(act==='del-reg'){if(confirm('Remove this registration permanently?')){var dr=db.regs.filter(function(r){return r.id===id;})[0];db.regs=db.regs.filter(function(r){return r.id!==id;});save();if(dr)promoteWaitlist(dr.eventId);toast('Registration removed');$('#ptable').innerHTML=partTable();}return;}
+  if(act==='edit-my'){var r=db.regs.filter(function(x){return x.id===id;})[0];if(r)openModal(myEditForm(r));return;}
+  if(act==='cancel-my'){var rr=db.regs.filter(function(x){return x.id===id;})[0];if(rr&&confirm('Cancel this registration? Your seat will be released.')){var eid=rr.eventId;rr.status='cancelled';save();promoteWaitlist(eid);toast('Registration cancelled');rerender();}return;}
+});
+document.addEventListener('submit',function(e){
+  var f=e.target;e.preventDefault();
+  if(f.id==='regForm'){
+    var ev=event(f.getAttribute('data-event'));if(!ev)return;
+    var res=register(ev,formData(f));
+    if(!res.ok){showErrors(f,res.errors);var first=$('.err:not(:empty)',f);if(first&&first.previousElementSibling&&first.previousElementSibling.focus)first.previousElementSibling.focus();return;}
+    ui.lastReg=res.reg;ui.myEmail=res.reg.email;toast(res.reg.status==='waitlist'?'Added to waitlist':res.reg.status==='confirmed'?'Registration confirmed!':'Registration received!');rerender();
+  }
+  else if(f.id==='myForm'){ui.myEmail=$('#myemail').value;ui.myChecked=true;if(validEmail(ui.myEmail.trim()))lsSet(EMAILKEY,ui.myEmail.trim().toLowerCase());rerender();}
+  else if(f.id==='checkinForm'){ui.ciq=($('#ciq')&&$('#ciq').value)||'';rerender();}
+  else if(f.id==='loginForm'){
+    var u=(($('#lu')&&$('#lu').value)||'').trim();
+    var p=(($('#lp')&&$('#lp').value)||'');
+    if(u===ADMIN_USER&&p===ADMIN_PASS){setAdmin(true);toast('Signed in as organizer');rerender();}
+    else{var le=$('#lerr');if(le)le.textContent='Wrong username or password. Use admin / admin123';toast('Login failed — use admin / admin123',true);}
+  }
+  else if(f.id==='myEditForm'){
+    var r=db.regs.filter(function(x){return x.id===f.getAttribute('data-id');})[0];if(!r)return;
+    var d=formData(f),errs={};
+    if((d.name||'').trim().length<2)errs.name='Please enter your full name.';
+    if(!validPhone(d.phone||''))errs.phone='Enter a valid phone number.';
+    if((d.inst||'').trim().length<2)errs.inst='Enter your institution or class.';
+    if(Object.keys(errs).length){showErrors(f,errs);return;}
+    r.name=d.name.trim();r.phone=d.phone.trim();r.inst=d.inst.trim();save();closeModal();toast('Details updated');rerender();
+  }
+  else if(f.id==='festForm'){
+    var d2=formData(f),er={},s=fromLocalInput(d2.start),en=fromLocalInput(d2.end);
+    if(!(d2.name||'').trim())er.name='Name is required.';
+    if(!s)er.start='Pick a start date.';
+    if(!en)er.end='Pick an end date.';
+    if(s&&en&&new Date(en)<new Date(s))er.end='End must be after start.';
+    if(Object.keys(er).length){showErrors(f,er);return;}
+    var fid=f.getAttribute('data-id'),obj=fid?fest(fid):null;
+    if(!obj){obj={id:'f-'+rid(6).toLowerCase()};db.fests.push(obj);}
+    obj.name=d2.name.trim();obj.desc=d2.desc.trim();obj.venue=d2.venue.trim();obj.start=s;obj.end=en;
+    save();closeModal();toast('Fest saved');rerender();
+  }
+  else if(f.id==='eventForm'){
+    var d3=formData(f),e3={},st=fromLocalInput(d3.start),dl=fromLocalInput(d3.deadline),cap=parseInt(d3.capacity,10);
+    if(!(d3.title||'').trim())e3.title='Title is required.';
+    if(!st)e3.start='Pick a start time.';
+    if(!dl)e3.deadline='Pick a deadline.';
+    if(st&&dl&&new Date(dl)>new Date(st))e3.deadline='Deadline must be before the event starts.';
+    if(!(cap>0))e3.capacity='Capacity must be at least 1.';
+    var eid=f.getAttribute('data-id');
+    if(eid&&cap>0&&cap<taken(eid))e3.capacity='Capacity cannot be below the '+taken(eid)+' active registrations.';
+    if(Object.keys(e3).length){showErrors(f,e3);return;}
+    var o=eid?event(eid):null;
+    if(!o){o={id:'e-'+rid(6).toLowerCase()};db.events.push(o);}
+    o.title=d3.title.trim();o.festId=d3.festId;o.category=d3.category;o.desc=d3.desc.trim();o.start=st;o.venue=d3.venue.trim();o.deadline=dl;o.capacity=cap;o.approval=d3.approval;o.info=d3.info.trim();o.announce=(d3.announce||'').trim();
+    save();closeModal();if(o.id)promoteWaitlist(o.id);toast('Event saved');rerender();
+  }
+});
+document.addEventListener('error',function(e){var t=e.target;if(t&&t.classList&&t.classList.contains('qrimg')){var d=document.createElement('div');d.className='qrfallback';d.innerHTML=esc(t.alt.replace('Ticket QR for ',''))+'<br>QR offline';t.replaceWith(d);}},true);
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal();});
+
+/* ---------- theme ---------- */
+(function(){
+  var t=lsGet(THEMEKEY);if(t)document.documentElement.setAttribute('data-theme',t);
+  $('#themeBtn').addEventListener('click',function(){
+    var cur=document.documentElement.getAttribute('data-theme');
+    var dark=cur?cur==='dark':window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches;
+    var next=dark?'light':'dark';document.documentElement.setAttribute('data-theme',next);lsSet(THEMEKEY,next);
+  });
+})();
+
+$('#orgName').textContent=db.org.name;
+route();
+window.__festdesk={getDb:function(){return db;},state:state,register:register};
+})();
+</script>
+</body>
+</html>
